@@ -52,7 +52,7 @@ def main(argv):
       region_endpoint = arg
 
   if source_bucket == '' or output_prefix == '' or archive_prefix == '':
-    print 'Missing required argument, usage: s3-csv2json.py -s <source bucket> -i <input prefix> -d <destination prefix> -b <archive_prefix> -r <region | us-east-1 default>'
+    print 'Missing required argument, usage: s3-csv2json.py -s <source bucket> -d <destination prefix> -b <archive_prefix> -r <region | us-east-1 default>'
     sys.exit(2)
 
   # Ensure we have our temp dir
