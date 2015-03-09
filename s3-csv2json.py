@@ -9,6 +9,7 @@ import csv
 import json
 import getopt
 import sys
+import re
 
 def main(argv):
   source_bucket = ''
@@ -51,22 +52,21 @@ def main(argv):
   for existing_key in s3bucket.list(prefix=input_prefix):
     if not(existing_key.name.endswith('/')):
       print "Found key: " + existing_key.name
-      if "/" in existing_key.name:
-        prefix, key_name = existing_key.name.split("/",1)
-        filename, extension = key_name.split(".",1)
-        newkey = s3bucket.new_key(output_prefix + filename + ".json")
-        print "Processing contents of: " + existing_key.name
-        key_contents= existing_key.get_contents_as_string()
-        key_csv = csv.DictReader(key_contents.splitlines(), delimiter=',', quotechar='"')
-        key_json = ''
-        for row in key_csv:
-          key_json+=json.dumps(row)
-          key_json+='\n'
-        print "Backing up key:" + existing_key.name
-        existing_key.copy(dst_bucket=source_bucket, dst_key=backup_prefix + key_name)
-        existing_key.delete()
-        print "Outputting json to: " + newkey.name
-        newkey.set_contents_from_string(key_json)
+      regex = re.compile('^%s(.*)'%input_prefix)
+      key_no_prefix = regex.match(existing_key.name).group(1)
+      newkey = s3bucket.new_key(output_prefix + key_no_prefix + ".json")
+      print "Processing contents of: " + existing_key.name
+      key_contents= existing_key.get_contents_as_string()
+      key_csv = csv.DictReader(key_contents.splitlines(), delimiter=',', quotechar='"')
+      key_json = ''
+      for row in key_csv:
+        key_json+=json.dumps(row)
+        key_json+='\n'
+      print "Backing up key:" + existing_key.name
+      existing_key.copy(dst_bucket=source_bucket, dst_key=backup_prefix + key_no_prefix)
+      existing_key.delete()
+      print "Outputting json to: " + newkey.name
+      newkey.set_contents_from_string(key_json)
 
 if __name__ == "__main__":
   main(sys.argv[1:])
