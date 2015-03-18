@@ -43,11 +43,11 @@ def main(argv):
   try:
     opts, args = getopt.getopt(argv, "s:i:o:a:r:e:")
   except getopt.GetoptError:
-    print 's3-csv2json.py -s <source bucket> -i <input prefix> -o <output prefix> -a <archive prefix> -r <region | us-east-1 default> -e <exlude prefix>'
+    print 's3-csv2json.py -s <source bucket> -i <input prefix> -o <output prefix> -a <archive prefix> -r <region | us-east-1 default> -e <exclude prefix>'
     sys.exit(2)
   for opt, arg in opts:
     if opt == '-h':
-      print 's3-csv2json.py -s <source bucket> -i <input prefix> -o <output prefix> -a <archive prefix> -r <region | us-east-1 default> -e <exlude prefix>'
+      print 's3-csv2json.py -s <source bucket> -i <input prefix> -o <output prefix> -a <archive prefix> -r <region | us-east-1 default> -e <exclude prefix>'
       sys.exit()
     elif opt in ("-s"):
       source_bucket = arg
@@ -63,7 +63,7 @@ def main(argv):
       exclude_prefix = arg
 
   if source_bucket == '' or output_prefix == '' or archive_prefix == '':
-    print 'Missing required argument, usage: s3-csv2json.py -s <source bucket> -i <input prefix> -d <destination prefix> -b <archive_prefix> -r <region | us-east-1 default> -e <exlude prefix>'
+    print 'Missing required argument, usage: s3-csv2json.py -s <source bucket> -i <input prefix> -d <destination prefix> -b <archive_prefix> -r <region | us-east-1 default> -e <exclude prefix>'
     sys.exit(2)
 
   # Ensure we have our temp dir
